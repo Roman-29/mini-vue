@@ -2,30 +2,20 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:00:10
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-10 18:26:18
+ * @LastEditTime: 2022-04-21 00:31:11
  * @Description:
  */
 
-import { track, trigger } from "./effect";
+import { mutableHandlers, readonlyHandlers } from "./baseHandler";
 
 export function reactive(raw: any) {
-  return new Proxy(raw, {
-    get(target, key) {
-      const res = Reflect.get(target, key);
+  return createReactiveObject(raw, mutableHandlers);
+}
 
-      // 存入effect
-      track(target, key);
+export function readonly(raw: any) {
+  return createReactiveObject(raw, readonlyHandlers);
+}
 
-      return res;
-    },
-
-    set(target, key, value) {
-      const res = Reflect.set(target, key, value);
-
-      // 触发effect
-      trigger(target, key);
-
-      return res;
-    },
-  });
+function createReactiveObject(target, baseHandles) {
+  return new Proxy(target, baseHandles);
 }
