@@ -2,12 +2,12 @@
  * @Author: luojw
  * @Date: 2022-04-10 16:34:44
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-17 21:39:05
+ * @LastEditTime: 2022-04-20 23:38:31
  * @Description:
  */
 
 import { reactive } from "../reactive";
-import { effect } from "../effect";
+import { effect, stop } from "../effect";
 
 describe("effect", () => {
   it("happy path", () => {
@@ -69,5 +69,41 @@ describe("effect", () => {
     run();
     // should have run
     expect(dummy).toBe(2);
+  });
+
+  it.skip("stop", () => {
+    let dummy;
+    const obj = reactive({ prop: 1 });
+    const runner = effect(() => {
+      dummy = obj.prop;
+    });
+    obj.prop = 2;
+    expect(dummy).toBe(2);
+    stop(runner);
+    obj.prop++;
+    expect(dummy).toBe(2);
+
+    // stopped effect should still be manually callable
+    runner();
+    expect(dummy).toBe(3);
+  });
+
+  it.skip("onStop", () => {
+    const obj = reactive({
+      foo: 1,
+    });
+    const onStop = jest.fn();
+    let dummy;
+    const runner = effect(
+      () => {
+        dummy = obj.foo;
+      },
+      {
+        onStop,
+      }
+    );
+
+    stop(runner);
+    expect(onStop).toBeCalledTimes(1);
   });
 });
