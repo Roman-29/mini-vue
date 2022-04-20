@@ -2,17 +2,19 @@
  * @Author: luojw
  * @Date: 2022-04-21 00:09:12
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-21 00:09:12
+ * @LastEditTime: 2022-04-21 00:47:11
  * @Description:
  */
 
-import { readonly } from "../reactive";
+import { readonly, isReadonly } from "../reactive";
 
 describe("readonly", () => {
   it("should make nested values readonly", () => {
     const original = { foo: 1, bar: { baz: 2 } };
     const wrapped = readonly(original);
     expect(wrapped).not.toBe(original);
+    expect(isReadonly(wrapped)).toBe(true);
+    expect(isReadonly(original)).toBe(false);
     expect(wrapped.foo).toBe(1);
   });
 
@@ -24,5 +26,6 @@ describe("readonly", () => {
 
     user.age = 11;
     expect(console.warn).toHaveBeenCalled();
+    expect(user.age).toBe(10);
   });
 });
