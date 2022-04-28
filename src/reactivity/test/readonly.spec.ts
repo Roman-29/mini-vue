@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-21 00:09:12
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-21 00:47:11
+ * @LastEditTime: 2022-04-28 14:10:14
  * @Description:
  */
 
@@ -15,6 +15,9 @@ describe("readonly", () => {
     expect(wrapped).not.toBe(original);
     expect(isReadonly(wrapped)).toBe(true);
     expect(isReadonly(original)).toBe(false);
+    expect(isReadonly(wrapped.bar)).toBe(true);
+    expect(isReadonly(original.bar)).toBe(false);
+
     expect(wrapped.foo).toBe(1);
   });
 

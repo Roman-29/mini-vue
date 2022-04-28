@@ -2,12 +2,13 @@
  * @Author: luojw
  * @Date: 2022-04-21 00:26:37
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-21 00:49:49
+ * @LastEditTime: 2022-04-28 14:10:57
  * @Description:
  */
 
 import { track, trigger } from "./effect";
-import { ReactiveFlags } from "./reactive";
+import { reactive, ReactiveFlags, readonly } from "./reactive";
+import { isObject } from "../share";
 
 function createGetter(isReadonly = false) {
   return function get(target, key) {
@@ -19,7 +20,13 @@ function createGetter(isReadonly = false) {
     const res = Reflect.get(target, key);
 
     if (!isReadonly) {
+      // readonly对象不需要收集依赖, 因为不会触发set
       track(target, key);
+    }
+
+    // 判断是否为object
+    if (isObject(target[key])) {
+      return isReadonly ? readonly(target[key]) : reactive(target[key]);
     }
     return res;
   };
