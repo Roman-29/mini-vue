@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-10 16:34:44
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-20 23:38:31
+ * @LastEditTime: 2022-04-28 13:52:23
  * @Description:
  */
 
@@ -63,15 +63,17 @@ describe("effect", () => {
     // should be called on first trigger
     obj.foo++;
     expect(scheduler).toHaveBeenCalledTimes(1);
+    obj.foo++;
+    expect(scheduler).toHaveBeenCalledTimes(2);
     // should not run yet
     expect(dummy).toBe(1);
     // manually run
     run();
     // should have run
-    expect(dummy).toBe(2);
+    expect(dummy).toBe(3);
   });
 
-  it.skip("stop", () => {
+  it("stop", () => {
     let dummy;
     const obj = reactive({ prop: 1 });
     const runner = effect(() => {
@@ -80,15 +82,23 @@ describe("effect", () => {
     obj.prop = 2;
     expect(dummy).toBe(2);
     stop(runner);
+
+    // obj.prop = 3
+
+    // obj.prop++ ==> obj.prop = obj.prop + 1 (同时触发get和set)
     obj.prop++;
     expect(dummy).toBe(2);
 
     // stopped effect should still be manually callable
     runner();
     expect(dummy).toBe(3);
+
+    // 确保没有因为runner()重新注册了响应式
+    obj.prop++;
+    expect(dummy).toBe(3);
   });
 
-  it.skip("onStop", () => {
+  it("onStop", () => {
     const obj = reactive({
       foo: 1,
     });

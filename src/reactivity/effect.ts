@@ -2,12 +2,12 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:07:36
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-21 00:05:04
+ * @LastEditTime: 2022-04-28 14:02:06
  * @Description:
  */
 
 const targetMap = new WeakMap();
-let activeEffect: ReactiveEffect;
+let activeEffect: any;
 
 class ReactiveEffect {
   private _fn: Function;
@@ -24,8 +24,17 @@ class ReactiveEffect {
   }
 
   run() {
+    // 该effect已经被stop, 直接执行函数即可
+    if (!this.active) {
+      return this._fn();
+    }
+
+    // 收集依赖
     activeEffect = this;
-    return this._fn();
+    const res = this._fn();
+    // 重置属性
+    activeEffect = undefined;
+    return res;
   }
 
   stop() {
@@ -43,6 +52,9 @@ function cleanupEffect(effect) {
   effect.deps.forEach((dep: any) => {
     dep.delete(effect);
   });
+
+  // 把 effect.deps 清空
+  effect.deps.length = 0;
 }
 
 export function track(target: any, key: string | symbol) {
@@ -59,6 +71,9 @@ export function track(target: any, key: string | symbol) {
     deps = new Set();
     depsMap.set(key, deps);
   }
+
+  // 看看 dep 之前有没有添加过，添加过的话 那么就不添加了
+  if (deps.has(activeEffect)) return;
 
   deps.add(activeEffect);
   activeEffect.deps.push(deps);
