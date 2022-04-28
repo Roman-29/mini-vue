@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:07:36
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:25:23
+ * @LastEditTime: 2022-04-28 14:42:25
  * @Description:
  */
 
@@ -71,7 +71,10 @@ export function track(target: any, key: string | symbol) {
     deps = new Set();
     depsMap.set(key, deps);
   }
+  trackEffects(deps);
+}
 
+export function trackEffects(deps) {
   // 看看 dep 之前有没有添加过，添加过的话 那么就不添加了
   if (deps.has(activeEffect)) return;
 
@@ -81,8 +84,16 @@ export function track(target: any, key: string | symbol) {
 
 export function trigger(target: any, key: string | symbol) {
   let depsMap = targetMap.get(target);
-  let deps = depsMap.get(key);
+  if (!depsMap) {
+    // never been tracked
+    return;
+  }
 
+  let deps = depsMap.get(key);
+  triggerEffects(deps);
+}
+
+export function triggerEffects(deps) {
   deps.forEach((effect) => {
     if (effect.options.scheduler) {
       effect.options.scheduler();
@@ -105,4 +116,8 @@ export function effect(fn: Function, options: any = {}) {
 
 export function stop(runner) {
   runner.effect.stop();
+}
+
+export function isTracking() {
+  return activeEffect;
 }
