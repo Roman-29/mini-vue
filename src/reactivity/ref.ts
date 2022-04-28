@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-28 14:32:20
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:45:14
+ * @LastEditTime: 2022-04-28 23:37:46
  * @Description:
  */
 
@@ -15,6 +15,7 @@ class RefImpl {
   private _rawValue;
   // ref自身的依赖收集
   public deps;
+  public __v_isRef = true;
 
   constructor(value) {
     this._value = convert(value);
@@ -48,4 +49,13 @@ function trackRefValue(ref) {
 
 export function ref(value) {
   return new RefImpl(value);
+}
+
+export function isRef(ref) {
+  return !!ref.__v_isRef;
+}
+
+export function unRef(ref) {
+  // 如果是ref返回value, 否则直接返回
+  return isRef(ref) ? ref.value : ref;
 }

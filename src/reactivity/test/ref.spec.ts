@@ -2,12 +2,13 @@
  * @Author: luojw
  * @Date: 2022-04-28 14:32:13
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:32:14
+ * @LastEditTime: 2022-04-28 23:36:31
  * @Description:
  */
 
 import { effect } from "../effect";
-import { ref } from "../ref";
+import { reactive } from "../reactive";
+import { isRef, ref, unRef } from "../ref";
 describe("ref", () => {
   it("happy path", () => {
     const a = ref(1);
@@ -44,5 +45,21 @@ describe("ref", () => {
     expect(dummy).toBe(1);
     a.value.count = 2;
     expect(dummy).toBe(2);
+  });
+
+  it("isRef", () => {
+    const a = ref(1);
+    const user = reactive({
+      age: 1,
+    });
+    expect(isRef(a)).toBe(true);
+    expect(isRef(1)).toBe(false);
+    expect(isRef(user)).toBe(false);
+  });
+
+  it("unRef", () => {
+    const a = ref(1);
+    expect(unRef(a)).toBe(1);
+    expect(unRef(1)).toBe(1);
   });
 });
