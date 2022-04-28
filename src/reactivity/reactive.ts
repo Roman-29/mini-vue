@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:00:10
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:19:02
+ * @LastEditTime: 2022-04-28 14:29:56
  * @Description:
  */
 
@@ -40,6 +40,10 @@ export function isReactive(value) {
 
 export function isReadonly(value) {
   return !!(value && value[ReactiveFlags.IS_READONLY]);
+}
+
+export function isProxy(value) {
+  return isReactive(value) || isReadonly(value);
 }
 
 function createReactiveObject(target, baseHandles) {

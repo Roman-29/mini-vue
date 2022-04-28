@@ -2,11 +2,11 @@
  * @Author: luojw
  * @Date: 2022-04-21 00:09:12
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:10:14
+ * @LastEditTime: 2022-04-28 14:30:32
  * @Description:
  */
 
-import { readonly, isReadonly } from "../reactive";
+import { readonly, isReadonly, isProxy } from "../reactive";
 
 describe("readonly", () => {
   it("should make nested values readonly", () => {
@@ -19,6 +19,7 @@ describe("readonly", () => {
     expect(isReadonly(original.bar)).toBe(false);
 
     expect(wrapped.foo).toBe(1);
+    expect(isProxy(wrapped)).toBe(true);
   });
 
   it("should call console.warn when set", () => {
