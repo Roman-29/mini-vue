@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-28 14:32:20
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 23:37:46
+ * @LastEditTime: 2022-04-28 23:56:15
  * @Description:
  */
 
@@ -56,6 +56,25 @@ export function isRef(ref) {
 }
 
 export function unRef(ref) {
-  // 如果是ref返回value, 否则直接返回
+  // 如果是ref返回value, 否则直接返回值
   return isRef(ref) ? ref.value : ref;
+}
+
+// 场景: 在template里ref不再需要.value
+export function proxyRefs(objectWithRef) {
+  return new Proxy(objectWithRef, {
+    get(target, key) {
+      // 如果是ref返回value, 否则直接返回值
+      return unRef(Reflect.get(target, key));
+    },
+
+    set(target, key, value) {
+      if (isRef(target[key]) && !isRef(value)) {
+        // 替换ref的value值
+        return (target[key].value = value);
+      } else {
+        return (target[key] = value);
+      }
+    },
+  });
 }
