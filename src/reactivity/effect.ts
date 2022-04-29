@@ -2,14 +2,14 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:07:36
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:42:25
+ * @LastEditTime: 2022-04-29 12:08:30
  * @Description:
  */
 
 const targetMap = new WeakMap();
 let activeEffect: any;
 
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: Function;
   public options;
 
@@ -58,7 +58,7 @@ function cleanupEffect(effect) {
 }
 
 export function track(target: any, key: string | symbol) {
-  if (!activeEffect) return;
+  if (!isTracking()) return;
 
   let depsMap = targetMap.get(target);
   if (!depsMap) {
