@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-29 13:23:05
+ * @LastEditTime: 2022-04-29 14:34:10
  * @Description:
  */
 
@@ -13,6 +13,9 @@ export function render(vnode, container) {
 }
 
 function patch(vnode, container) {
+  // 需要判断vnode是组件还是element
+  // processElement();
+
   // 处理组件
   processComponent(vnode, container);
 }

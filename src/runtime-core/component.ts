@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-29 13:13:27
+ * @LastEditTime: 2022-04-29 14:15:55
  * @Description:
  */
 
@@ -12,9 +12,7 @@ export function createComponentInstance(vnode) {
     type: vnode.type,
   };
 
-  return {
-    component,
-  };
+  return component;
 }
 
 export function setupComponent(instance) {
