@@ -2,11 +2,15 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:34:00
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 23:11:03
+ * @LastEditTime: 2022-05-03 23:49:10
  * @Description:
  */
 
 import { ShapeFlags } from "../share/ShapeFlags";
+
+export const Fragment = Symbol("Fragment");
+export const Text = Symbol("Text");
+
 export function createVnode(type, props?, children?) {
   const vnode = {
     type,
@@ -31,6 +35,10 @@ export function createVnode(type, props?, children?) {
   }
 
   return vnode;
+}
+
+export function createTextVnode(text: string) {
+  return createVnode(Text, {}, text);
 }
 
 function getShapeFlag(type) {
