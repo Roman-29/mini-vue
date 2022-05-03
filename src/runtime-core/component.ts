@@ -2,13 +2,14 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 16:47:10
+ * @LastEditTime: 2022-05-03 17:12:28
  * @Description:
  */
 
 import { shallowReadonly } from "../reactivity/reactive";
 import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandles } from "./componentPublicInstance";
+import { emit } from "./componentEmit";
 
 export function createComponentInstance(vnode) {
   const component = {
@@ -17,7 +18,11 @@ export function createComponentInstance(vnode) {
     setupState: {},
     el: null,
     props: {},
+    emit: () => {},
   };
+
+  // 锁定第一个参数是组件instance
+  component.emit = emit.bind(null, component) as any;
 
   return component;
 }
@@ -39,7 +44,9 @@ function setupStatefulComponent(instance) {
   const { setup } = Component;
 
   if (setup) {
-    const setupResult = setup(shallowReadonly(instance.props));
+    const setupResult = setup(shallowReadonly(instance.props), {
+      emit: instance.emit,
+    });
 
     handleSetupResult(instance, setupResult);
   }
