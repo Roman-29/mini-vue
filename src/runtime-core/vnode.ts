@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:34:00
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 14:03:56
+ * @LastEditTime: 2022-05-03 23:11:03
  * @Description:
  */
 
@@ -16,10 +16,18 @@ export function createVnode(type, props?, children?) {
     el: null,
   };
 
+  // 是否有子节点
   if (typeof children === "string") {
     vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN;
   } else if (Array.isArray(children)) {
     vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN;
+  }
+
+  // 组件是否有slot
+  if (vnode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+    if (typeof children === "object") {
+      vnode.shapeFlag |= ShapeFlags.SLOT_CHILDREN;
+    }
   }
 
   return vnode;

@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 17:12:28
+ * @LastEditTime: 2022-05-03 22:10:30
  * @Description:
  */
 
@@ -10,6 +10,7 @@ import { shallowReadonly } from "../reactivity/reactive";
 import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandles } from "./componentPublicInstance";
 import { emit } from "./componentEmit";
+import { initSlots } from "./componentSlot";
 
 export function createComponentInstance(vnode) {
   const component = {
@@ -18,6 +19,7 @@ export function createComponentInstance(vnode) {
     setupState: {},
     el: null,
     props: {},
+    slots: {},
     emit: () => {},
   };
 
@@ -28,9 +30,8 @@ export function createComponentInstance(vnode) {
 }
 
 export function setupComponent(instance) {
-  // TODO
   initProps(instance, instance.vnode.props);
-  // initSlots
+  initSlots(instance, instance.vnode.children);
 
   setupStatefulComponent(instance);
 }
