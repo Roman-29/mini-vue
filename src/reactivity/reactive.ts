@@ -2,10 +2,11 @@
  * @Author: luojw
  * @Date: 2022-04-10 17:00:10
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-28 14:29:56
+ * @LastEditTime: 2022-05-03 16:49:55
  * @Description:
  */
 
+import { isObject } from "../share/index";
 import {
   mutableHandlers,
   readonlyHandlers,
@@ -47,5 +48,9 @@ export function isProxy(value) {
 }
 
 function createReactiveObject(target, baseHandles) {
+  if (!isObject(target)) {
+    console.warn(`target ${target} 必须是一个对象`);
+    return target;
+  }
   return new Proxy(target, baseHandles);
 }
