@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:26:07
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-29 15:50:53
+ * @LastEditTime: 2022-05-03 14:10:07
  * @Description:
  */
 
@@ -18,6 +18,12 @@ export const App = {
       {
         id: "root",
         class: ["red", "hard"],
+        onClick() {
+          console.log("click");
+        },
+        onMousedown() {
+          console.log("mousedown");
+        },
       },
       // 1. string 类型
       // "helloworld"

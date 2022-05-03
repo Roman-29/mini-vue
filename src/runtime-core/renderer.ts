@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 14:04:23
+ * @LastEditTime: 2022-05-03 14:08:26
  * @Description:
  */
 
@@ -32,12 +32,20 @@ function processElement(vnode, container) {
 function mountElement(vnode, container) {
   const el = (vnode.el = document.createElement(vnode.type));
 
-  const { props, children, shapeFlag } = vnode;
+  const { props } = vnode;
 
   for (const key in props) {
     const val = props[key];
-    el.setAttribute(key, val);
+    const isOn = (key: string) => /^on[A-Z]/.test(key);
+    if (isOn(key)) {
+      const event = key.slice(2).toLowerCase();
+      el.addEventListener(event, val);
+    } else {
+      el.setAttribute(key, val);
+    }
   }
+
+  const { children, shapeFlag } = vnode;
 
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children;
