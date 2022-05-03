@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-04-29 15:01:23
+ * @LastEditTime: 2022-04-29 17:07:06
  * @Description:
  */
 
@@ -28,7 +28,7 @@ function processElement(vnode, container) {
 }
 
 function mountElement(vnode, container) {
-  const el = document.createElement(vnode.type);
+  const el = (vnode.el = document.createElement(vnode.type));
 
   const { props, children } = vnode;
 
@@ -55,17 +55,20 @@ function processComponent(vnode, container) {
   mountComponent(vnode, container);
 }
 
-function mountComponent(vnode, container) {
-  const instance = createComponentInstance(vnode);
+function mountComponent(initialVNode, container) {
+  const instance = createComponentInstance(initialVNode);
 
   setupComponent(instance);
-  setupRenderEffect(instance, container);
+  setupRenderEffect(instance, initialVNode, container);
 }
 
-function setupRenderEffect(instance, container) {
-  const subTree = instance.render();
+function setupRenderEffect(instance, initialVNode, container) {
+  const { proxy } = instance;
+  const subTree = instance.render.call(proxy);
 
   // vnode-> patch
   // vnode-> element-> mountElement
   patch(subTree, container);
+
+  initialVNode.el = subTree.el;
 }
