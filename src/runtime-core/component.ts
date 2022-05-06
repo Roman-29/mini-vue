@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-04 00:05:57
+ * @LastEditTime: 2022-05-06 10:16:31
  * @Description:
  */
 
@@ -12,7 +12,7 @@ import { PublicInstanceProxyHandles } from "./componentPublicInstance";
 import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlot";
 
-export function createComponentInstance(vnode) {
+export function createComponentInstance(vnode, parent) {
   const component = {
     vnode,
     type: vnode.type,
@@ -20,6 +20,8 @@ export function createComponentInstance(vnode) {
     el: null,
     props: {},
     slots: {},
+    provides: parent ? parent.provides : {},
+    parent,
     emit: () => {},
   };
 
