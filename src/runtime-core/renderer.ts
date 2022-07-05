@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-05 13:40:51
+ * @LastEditTime: 2022-07-05 16:51:20
  * @Description:
  */
 
@@ -18,6 +18,8 @@ export function createRenderer(options) {
     createElement: hostCreateElement,
     patchProp: hostPatchProp,
     insert: hostInsert,
+    remove: hostRemove,
+    setElementText: hostSetElementText,
   } = options;
 
   function render(vnode, container) {
@@ -49,7 +51,7 @@ export function createRenderer(options) {
   }
 
   function processFragment(n1, n2, container, parentComponent) {
-    mountChildren(n2, container, parentComponent);
+    mountChildren(n2.children, container, parentComponent);
   }
 
   function processText(n1, n2, container) {
@@ -62,11 +64,11 @@ export function createRenderer(options) {
     if (!n1) {
       mountElement(n2, container, parentComponent);
     } else {
-      patchElement(n1, n2, container);
+      patchElement(n1, n2, container, parentComponent);
     }
   }
 
-  function patchElement(n1, n2, container) {
+  function patchElement(n1, n2, container, parentComponent) {
     console.log("patchElement");
     console.log("current", n2);
     console.log("prev", n1);
@@ -77,6 +79,7 @@ export function createRenderer(options) {
     const el = (n2.el = n1.el);
 
     patchProps(el, oldProps, newProps);
+    patchChildren(n1, n2, el, parentComponent);
   }
 
   function patchProps(el, oldProps, newProps) {
@@ -101,6 +104,42 @@ export function createRenderer(options) {
     }
   }
 
+  function patchChildren(n1, n2, container, parentComponent) {
+    const prevShapeFlag = n1.shapeFlag;
+    const shapeFlag = n2.shapeFlag;
+    const c1 = n1.children;
+    const c2 = n2.children;
+
+    if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      // 更新子节点是 Text 类型
+      if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        // 把旧的子节点清空
+        unmountChildren(c1);
+      }
+      if (c1 !== c2) {
+        // 设置 Text
+        hostSetElementText(container, c2);
+      }
+    } else {
+      // 更新子节点是 数组
+      if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+        // 清空
+        hostSetElementText(container, "");
+        mountChildren(c2, container, parentComponent);
+      } else {
+        // diff 算法
+      }
+    }
+  }
+
+  function unmountChildren(children) {
+    for (let i = 0; i < children.length; i++) {
+      const el = children[i].el;
+      // remove
+      hostRemove(el);
+    }
+  }
+
   function mountElement(vnode, container, parentComponent) {
     const el = (vnode.el = hostCreateElement(vnode.type));
 
@@ -117,14 +156,14 @@ export function createRenderer(options) {
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-      mountChildren(vnode, el, parentComponent);
+      mountChildren(vnode.children, el, parentComponent);
     }
 
     hostInsert(el, container);
   }
 
-  function mountChildren(vnode, container, parentComponent) {
-    vnode.children.forEach((v) => {
+  function mountChildren(children, container, parentComponent) {
+    children.forEach((v) => {
       patch(null, v, container, parentComponent);
     });
   }

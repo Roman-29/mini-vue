@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-05-15 21:23:38
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-05 10:57:59
+ * @LastEditTime: 2022-07-05 13:56:23
  * @Description:
  */
 
@@ -30,10 +30,23 @@ function insert(el, container) {
   container.append(el);
 }
 
+function remove(child) {
+  const parent = child.parentNode;
+  if (parent) {
+    parent.removeChild(child);
+  }
+}
+
+function setElementText(el, text) {
+  el.textContent = text;
+}
+
 const renderer: any = createRenderer({
   createElement,
   patchProp,
   insert,
+  remove,
+  setElementText,
 });
 
 export function createApp(...args) {
