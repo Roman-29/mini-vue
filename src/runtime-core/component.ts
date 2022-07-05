@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-06 10:16:31
+ * @LastEditTime: 2022-07-04 22:37:19
  * @Description:
  */
 
@@ -11,6 +11,7 @@ import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandles } from "./componentPublicInstance";
 import { emit } from "./componentEmit";
 import { initSlots } from "./componentSlot";
+import { proxyRefs } from "../reactivity";
 
 export function createComponentInstance(vnode, parent) {
   const component = {
@@ -22,6 +23,8 @@ export function createComponentInstance(vnode, parent) {
     slots: {},
     provides: parent ? parent.provides : {},
     parent,
+    isMounted: false,
+    subTree: {},
     emit: () => {},
   };
 
@@ -61,7 +64,7 @@ function handleSetupResult(instance, setupResult) {
   // function or Object
   // TODO function
   if (typeof setupResult === "object") {
-    instance.setupState = setupResult;
+    instance.setupState = proxyRefs(setupResult);
   }
 
   finishComponentSetup(instance);
