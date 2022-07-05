@@ -2,9 +2,11 @@
  * @Author: luojw
  * @Date: 2022-04-28 14:09:32
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 17:34:57
+ * @LastEditTime: 2022-07-05 13:39:23
  * @Description:
  */
+
+export const EMPTY_OBJ = {};
 
 export const isObject = (value) => {
   return value !== null && typeof value === "object";
