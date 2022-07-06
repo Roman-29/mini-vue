@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-05 13:42:09
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-05 14:22:23
+ * @LastEditTime: 2022-07-05 17:27:02
  * @Description:
  */
 
@@ -25,9 +25,9 @@ export default {
       // 老的是 text 新的是 text
       // h(TextToText),
       // 老的是 text 新的是 array
-      h(TextToArray),
+      // h(TextToArray),
       // 老的是 array 新的是 array
-      // h(ArrayToArray)
+      h(ArrayToArray),
     ]);
   },
 };

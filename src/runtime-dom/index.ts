@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-05-15 21:23:38
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-05 13:56:23
+ * @LastEditTime: 2022-07-06 10:36:49
  * @Description:
  */
 
@@ -26,8 +26,8 @@ function patchProp(el, key, prevVal, nextVal) {
   }
 }
 
-function insert(el, container) {
-  container.append(el);
+function insert(child, container, anchor) {
+  container.insertBefore(child, anchor || null);
 }
 
 function remove(child) {

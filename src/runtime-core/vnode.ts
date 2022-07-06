@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:34:00
  * @LastEditors: luojw
- * @LastEditTime: 2022-05-03 23:49:10
+ * @LastEditTime: 2022-07-05 17:26:38
  * @Description:
  */
 
@@ -16,6 +16,7 @@ export function createVnode(type, props?, children?) {
     type,
     props,
     children,
+    key: props && props.key,
     shapeFlag: getShapeFlag(type),
     el: null,
   };
