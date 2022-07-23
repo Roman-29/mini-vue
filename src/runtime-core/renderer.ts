@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-10 15:20:40
+ * @LastEditTime: 2022-07-23 18:27:55
  * @Description:
  */
 
@@ -12,6 +12,7 @@ import { ShapeFlags } from "../share/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { shouldUpdateComponent } from "./componentUpdateUtils";
 import { createAppAPI } from "./createApp";
+import { queueJobs } from "./scheduler";
 import { Fragment, Text } from "./vnode";
 
 export function createRenderer(options) {
@@ -355,41 +356,49 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance, initialVNode, container, anchor) {
-    instance.update = effect(() => {
-      if (!instance.isMounted) {
-        const { proxy } = instance;
+    instance.update = effect(
+      () => {
+        if (!instance.isMounted) {
+          const { proxy } = instance;
 
-        // 保存subTree
-        const subTree = (instance.subTree = instance.render.call(proxy));
+          // 保存subTree
+          const subTree = (instance.subTree = instance.render.call(proxy));
 
-        console.log(subTree);
+          console.log(subTree);
 
-        // vnode-> patch
-        // vnode-> element-> mountElement
-        patch(null, subTree, container, instance, anchor);
+          // vnode-> patch
+          // vnode-> element-> mountElement
+          patch(null, subTree, container, instance, anchor);
 
-        initialVNode.el = subTree.el;
+          initialVNode.el = subTree.el;
 
-        instance.isMounted = true;
-      } else {
-        console.log("update");
+          instance.isMounted = true;
+        } else {
+          console.log("update");
 
-        const { next, vnode } = instance;
-        if (next) {
-          next.el = vnode.el;
+          const { next, vnode } = instance;
+          if (next) {
+            next.el = vnode.el;
 
-          updateComponentPreRender(instance, next);
+            updateComponentPreRender(instance, next);
+          }
+
+          const { proxy } = instance;
+          const subTree = instance.render.call(proxy);
+          const prevSubTree = instance.subTree;
+          // 获取新旧subTree并更新
+          instance.subTree = subTree;
+
+          patch(prevSubTree, subTree, container, instance, anchor);
         }
-
-        const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
-        const prevSubTree = instance.subTree;
-        // 获取新旧subTree并更新
-        instance.subTree = subTree;
-
-        patch(prevSubTree, subTree, container, instance, anchor);
+      },
+      {
+        scheduler() {
+          // 注册微任务队列
+          queueJobs(instance.update);
+        },
       }
-    });
+    );
   }
 
   return {
