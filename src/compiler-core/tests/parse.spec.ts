@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-23 23:36:07
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-24 13:52:18
+ * @LastEditTime: 2022-07-24 13:57:26
  * @Description:
  */
 import { NodeTypes } from "../src/ast";
@@ -29,6 +29,17 @@ describe("Parse", () => {
       expect(ast.children[0]).toStrictEqual({
         type: NodeTypes.ELEMENT,
         tag: "div",
+      });
+    });
+  });
+
+  describe("text", () => {
+    it("simple text", () => {
+      const ast = baseParse("some text");
+
+      expect(ast.children[0]).toStrictEqual({
+        type: NodeTypes.TEXT,
+        content: "some text",
       });
     });
   });

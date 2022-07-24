@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-23 23:36:07
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-24 13:55:55
+ * @LastEditTime: 2022-07-24 13:59:41
  * @Description:
  */
 
@@ -38,6 +38,11 @@ function parseChildren(context) {
     }
   }
 
+  if (!node) {
+    // 上面判断都不符合, 将作为text处理
+    node = parseText(context);
+  }
+
   nodes.push(node);
 
   return nodes;
@@ -58,10 +63,10 @@ function parseInterpolation(context) {
 
   const rawContentLength = closeIndex - openDelimiter.length;
 
-  const rawContent = context.source.slice(0, rawContentLength);
+  const rawContent = parseTextData(context, rawContentLength);
   const content = rawContent.trim();
 
-  advanceBy(context, rawContentLength + closeDelimiter.length);
+  advanceBy(context, closeDelimiter.length);
 
   return {
     type: NodeTypes.INTERPOLATION,
@@ -95,6 +100,23 @@ function parseTag(context: any, type: TagType) {
     type: NodeTypes.ELEMENT,
     tag,
   };
+}
+
+function parseText(context: any) {
+  // 1. 获取content
+  const content = parseTextData(context, context.source.length);
+
+  return {
+    type: NodeTypes.TEXT,
+    content,
+  };
+}
+
+function parseTextData(context: any, length) {
+  const content = context.source.slice(0, length);
+
+  advanceBy(context, length);
+  return content;
 }
 
 // 推进内容
