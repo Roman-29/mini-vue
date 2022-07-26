@@ -1,0 +1,41 @@
+/*
+ * @Author: luojw
+ * @Date: 2022-07-26 13:16:50
+ * @LastEditors: luojw
+ * @LastEditTime: 2022-07-26 13:20:20
+ * @Description:
+ */
+export function generate(ast) {
+  const context = createCodegenContext();
+  const { push } = context;
+  push("return ");
+
+  const functionName = "render";
+  const args = ["_ctx", "_cache"];
+  const signature = args.join(", ");
+
+  push(`function ${functionName}(${signature}){`);
+  push("return ");
+  genNode(ast.codegenNode, context);
+  push("}");
+
+  return {
+    code: context.code,
+  };
+}
+
+function createCodegenContext() {
+  const context = {
+    code: "",
+    push(source) {
+      context.code += source;
+    },
+  };
+
+  return context;
+}
+
+function genNode(node, context) {
+  const { push } = context;
+  push(`'${node.content}'`);
+}

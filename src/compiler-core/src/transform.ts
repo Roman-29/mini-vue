@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-26 09:06:15
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-26 09:12:30
+ * @LastEditTime: 2022-07-26 13:15:59
  * @Description:
  */
 
@@ -10,6 +10,11 @@ export function transform(root, options = {}) {
   const context = createTransformContext(root, options);
 
   traverseNode(root, context);
+  createRootCodegen(root);
+}
+
+function createRootCodegen(root: any) {
+  root.codegenNode = root.children[0];
 }
 
 function createTransformContext(root: any, options: any) {
