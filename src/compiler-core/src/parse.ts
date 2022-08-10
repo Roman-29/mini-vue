@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-23 23:36:07
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-24 23:35:31
+ * @LastEditTime: 2022-08-09 17:33:53
  * @Description:
  */
 
@@ -168,5 +168,6 @@ function createParserContext(content: string) {
 function createRoot(children) {
   return {
     children,
+    type: NodeTypes.ROOT,
   };
 }

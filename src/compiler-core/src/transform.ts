@@ -2,15 +2,20 @@
  * @Author: luojw
  * @Date: 2022-07-26 09:06:15
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-26 13:15:59
+ * @LastEditTime: 2022-08-09 17:36:55
  * @Description:
  */
+
+import { NodeTypes } from "./ast";
+import { TO_DISPLAY_STRING } from "./runtimeHelpers";
 
 export function transform(root, options = {}) {
   const context = createTransformContext(root, options);
 
   traverseNode(root, context);
   createRootCodegen(root);
+
+  root.helpers = [...context.helpers.keys()];
 }
 
 function createRootCodegen(root: any) {
@@ -21,6 +26,10 @@ function createTransformContext(root: any, options: any) {
   const context = {
     root,
     nodeTransforms: options.nodeTransforms || [],
+    helpers: new Map(),
+    helper(key) {
+      context.helpers.set(key, 1);
+    },
   };
 
   return context;
@@ -33,16 +42,25 @@ function traverseNode(node, context) {
     transform(node);
   }
 
-  traverseChildren(node, context);
+  switch (node.type) {
+    case NodeTypes.INTERPOLATION:
+      context.helper(TO_DISPLAY_STRING);
+      break;
+    case NodeTypes.ROOT:
+    case NodeTypes.ELEMENT:
+      traverseChildren(node, context);
+      break;
+
+    default:
+      break;
+  }
 }
 
 function traverseChildren(node: any, context: any) {
   const children = node.children;
 
-  if (children) {
-    for (let i = 0; i < children.length; i++) {
-      const node = children[i];
-      traverseNode(node, context);
-    }
+  for (let i = 0; i < children.length; i++) {
+    const node = children[i];
+    traverseNode(node, context);
   }
 }
