@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-28 14:09:32
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-05 13:39:23
+ * @LastEditTime: 2022-08-10 11:06:53
  * @Description:
  */
 
@@ -11,6 +11,8 @@ export const EMPTY_OBJ = {};
 export const isObject = (value) => {
   return value !== null && typeof value === "object";
 };
+
+export const isString = (value) => typeof value === "string";
 
 export const hasChanged = (val, newValue) => {
   return !Object.is(val, newValue);

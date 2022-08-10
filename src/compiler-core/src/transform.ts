@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-07-26 09:06:15
  * @LastEditors: luojw
- * @LastEditTime: 2022-08-09 17:36:55
+ * @LastEditTime: 2022-08-10 13:31:33
  * @Description:
  */
 
@@ -19,7 +19,12 @@ export function transform(root, options = {}) {
 }
 
 function createRootCodegen(root: any) {
-  root.codegenNode = root.children[0];
+  const child = root.children[0];
+  if (child.type === NodeTypes.ELEMENT) {
+    root.codegenNode = child.codegenNode;
+  } else {
+    root.codegenNode = root.children[0];
+  }
 }
 
 function createTransformContext(root: any, options: any) {
@@ -37,9 +42,11 @@ function createTransformContext(root: any, options: any) {
 
 function traverseNode(node, context) {
   const nodeTransforms = context.nodeTransforms;
+  const exitFns: any = [];
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i];
-    transform(node);
+    const onExit = transform(node, context);
+    if (onExit) exitFns.push(onExit);
   }
 
   switch (node.type) {
@@ -53,6 +60,11 @@ function traverseNode(node, context) {
 
     default:
       break;
+  }
+
+  let i = exitFns.length;
+  while (i--) {
+    exitFns[i]();
   }
 }
 

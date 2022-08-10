@@ -2,14 +2,16 @@
  * @Author: luojw
  * @Date: 2022-07-26 13:13:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-08-10 10:17:45
+ * @LastEditTime: 2022-08-10 13:32:44
  * @Description:
  */
 
 import { generate } from "../src/codegen";
 import { baseParse } from "../src/parse";
 import { transform } from "../src/transform";
+import { transformElement } from "../src/transforms/transformElement";
 import { transformExpression } from "../src/transforms/transformExpression";
+import { transformText } from "../src/transforms/transformText";
 
 describe("codegen", () => {
   it("string", () => {
@@ -23,6 +25,15 @@ describe("codegen", () => {
     const ast = baseParse("{{message}}");
     transform(ast, {
       nodeTransforms: [transformExpression],
+    });
+    const { code } = generate(ast);
+    expect(code).toMatchSnapshot();
+  });
+
+  it("element", () => {
+    const ast = baseParse("<div>hi,{{message}}</div>");
+    transform(ast, {
+      nodeTransforms: [transformExpression, transformElement, transformText],
     });
     const { code } = generate(ast);
     expect(code).toMatchSnapshot();
