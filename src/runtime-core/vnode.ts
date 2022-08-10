@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:34:00
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-08 14:11:24
+ * @LastEditTime: 2022-08-10 15:07:56
  * @Description:
  */
 
@@ -10,6 +10,8 @@ import { ShapeFlags } from "../share/ShapeFlags";
 
 export const Fragment = Symbol("Fragment");
 export const Text = Symbol("Text");
+
+export { createVnode as createElementVNode };
 
 export function createVnode(type, props?, children?) {
   const vnode = {

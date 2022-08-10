@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:44:33
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-04 22:37:19
+ * @LastEditTime: 2022-08-10 15:01:56
  * @Description:
  */
 
@@ -74,9 +74,13 @@ function handleSetupResult(instance, setupResult) {
 function finishComponentSetup(instance) {
   const Component = instance.type;
 
-  if (Component.render) {
-    instance.render = Component.render;
+  if (compiler && !Component.render) {
+    if (Component.template) {
+      Component.render = compiler(Component.template);
+    }
   }
+
+  instance.render = Component.render;
 }
 
 let currentInstance = null;
@@ -87,4 +91,10 @@ export function getCurrentInstance() {
 
 export function setCurrentInstance(instance) {
   currentInstance = instance;
+}
+
+let compiler;
+
+export function registerRuntimeCompiler(_compiler) {
+  compiler = _compiler;
 }

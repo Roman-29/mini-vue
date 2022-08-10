@@ -2,7 +2,7 @@
  * @Author: luojw
  * @Date: 2022-04-29 12:38:08
  * @LastEditors: luojw
- * @LastEditTime: 2022-07-23 18:27:55
+ * @LastEditTime: 2022-08-10 15:03:28
  * @Description:
  */
 
@@ -362,7 +362,10 @@ export function createRenderer(options) {
           const { proxy } = instance;
 
           // 保存subTree
-          const subTree = (instance.subTree = instance.render.call(proxy));
+          const subTree = (instance.subTree = instance.render.call(
+            proxy,
+            proxy
+          ));
 
           console.log(subTree);
 
@@ -384,7 +387,7 @@ export function createRenderer(options) {
           }
 
           const { proxy } = instance;
-          const subTree = instance.render.call(proxy);
+          const subTree = instance.render.call(proxy, proxy);
           const prevSubTree = instance.subTree;
           // 获取新旧subTree并更新
           instance.subTree = subTree;
